@@ -6,11 +6,10 @@ import time
 app = Flask(__name__)
 CORS(app)
 
-# API endpoints
 ETHERSCAN_API = "https://api.etherscan.io/v2/api"
 COINGECKO_API = "https://api.coingecko.com/api/v3"
 
-# Your Etherscan API key
+# my ket
 ETHERSCAN_API_KEY = "AIPECX2EPU2YT1E58DZ1IVDF9Q7BYPIRIQ"
 
 def get_eth_balance(address):
@@ -703,18 +702,5 @@ def test_etherscan():
     })
 
 if __name__ == '__main__':
-    print("🚀 Starting Crypto Wallet API (with USD pricing)...")
-    print("🔑 Using Etherscan API V2 + CoinGecko API")
-    print("\n💡 Test endpoints:")
-    print("   Health: http://localhost:5000/api/health")
-    print("   Wallet: http://localhost:5000/api/wallet/0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045")
-    print("   Token Price: http://localhost:5000/api/token-price/0xdac17f958d2ee523a2206206994597c13d831ec7")
-    print("\n📊 Try these wallets:")
-    print("   Vitalik: 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045")
-    print("   Binance: 0x28C6c06298d514Db089934071355E5743bf21d60")
-    print("\n💰 Now includes:")
-    print("   ✅ ETH balance with USD value")
-    print("   ✅ All token holdings with USD prices")
-    print("   ✅ Individual token values")
-    print("   ✅ Total portfolio value")
+    print("running")
     app.run(debug=True, port=5000)
