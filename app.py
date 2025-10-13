@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import requests
 import time
+import os 
 
 app = Flask(__name__)
 CORS(app)
@@ -9,8 +10,7 @@ CORS(app)
 ETHERSCAN_API = "https://api.etherscan.io/v2/api"
 COINGECKO_API = "https://api.coingecko.com/api/v3"
 
-# my ket
-ETHERSCAN_API_KEY = "AIPECX2EPU2YT1E58DZ1IVDF9Q7BYPIRIQ"
+ETHERSCAN_API_KEY = os.environ.get('ETHERSCAN_API_KEY', '')
 
 def get_eth_balance(address):
     """Get ETH balance for a wallet address"""
