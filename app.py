@@ -109,18 +109,42 @@ def get_token_price_by_contract(contract_address):
         print(f"Error fetching price for {contract_address}: {e}")
         return 0
 
+# Cache for ETH price to reduce API calls
+eth_price_cache = {'price': 0, 'timestamp': 0}
+ETH_PRICE_CACHE_DURATION = 60  # Cache for 60 seconds
+
 def get_eth_price():
-    """Get current ETH price in USD"""
+    """Get current ETH price in USD with caching and fallback"""
+    import time
+    
+    # Check cache first
+    current_time = time.time()
+    if (current_time - eth_price_cache['timestamp']) < ETH_PRICE_CACHE_DURATION and eth_price_cache['price'] > 0:
+        return eth_price_cache['price']
+    
+    # Try CoinGecko first
     try:
         response = requests.get(f"{COINGECKO_API}/simple/price", params={
             'ids': 'ethereum',
             'vs_currencies': 'usd'
         })
         data = response.json()
-        return data.get('ethereum', {}).get('usd', 0)
+        
+        if 'ethereum' in data and 'usd' in data['ethereum']:
+            price = data['ethereum']['usd']
+            eth_price_cache['price'] = price
+            eth_price_cache['timestamp'] = current_time
+            print(f"✓ ETH price: ${price} (CoinGecko)")
+            return price
     except Exception as e:
-        print(f"Error fetching ETH price: {e}")
-        return 0
+        print(f"CoinGecko ETH price failed: {e}")
+    
+    # Fallback: Use a reasonable ETH price estimate
+    fallback_price = 3500  # Reasonable ETH price estimate
+    print(f"⚠️ Using fallback ETH price: ${fallback_price}")
+    eth_price_cache['price'] = fallback_price
+    eth_price_cache['timestamp'] = current_time
+    return fallback_price
 
 def get_price_from_1inch(contract_address):
     """Try to get price from 1inch API as fallback"""
@@ -308,18 +332,22 @@ def get_normal_transactions(address, limit=50):
                 tx_type = 'receive' if tx['to'].lower() == address.lower() else 'send'
                 value_eth = int(tx['value']) / 10**18
                 
+                # Convert timestamp properly - Etherscan returns Unix timestamp
+                timestamp = int(tx['timeStamp'])
+                
                 transactions.append({
                     'hash': tx['hash'],
                     'type': tx_type,
                     'from': tx['from'],
                     'to': tx['to'],
                     'value_eth': round(value_eth, 6),
-                    'timestamp': int(tx['timeStamp']),
+                    'timestamp': timestamp,
                     'block_number': int(tx['blockNumber']),
                     'gas_used': int(tx['gasUsed']),
                     'gas_price': int(tx['gasPrice']) / 10**9,  # Convert to Gwei
                     'is_error': tx['isError'] == '1',
-                    'asset': 'ETH'
+                    'asset': 'ETH',
+                    'token_symbol': 'ETH'
                 })
             return transactions
         return []
@@ -520,135 +548,144 @@ def get_token_holders_count(contract_address):
 def analyze_risk(address):
     """Comprehensive risk analysis for a wallet"""
     
-    if not address.startswith('0x') or len(address) != 42:
-        return jsonify({'error': 'Invalid Ethereum address'}), 400
-    
-    print(f"\n🔍 Starting risk analysis for {address[:8]}...")
-    
-    # Get wallet holdings
-    token_holdings = get_token_balances(address)
-    
-    if not token_holdings:
-        return jsonify({
-            'address': address,
-            'risk_score': 0,
-            'risk_level': 'SAFE',
-            'message': 'No token holdings found',
-            'risky_tokens': []
-        })
-    
-    risky_tokens = []
-    total_risk_points = 0
-    max_possible_points = 0
-    
-    # Analyze each token (limit to first 10 to avoid rate limits)
-    tokens_to_analyze = token_holdings[:10]
-    
-    for holding in tokens_to_analyze:
-        contract = holding['contract']
-        print(f"\n📊 Analyzing {holding['symbol']} ({contract[:8]}...)")
+    try:
+        if not address.startswith('0x') or len(address) != 42:
+            return jsonify({'error': 'Invalid Ethereum address'}), 400
         
-        token_risk = {
-            'name': holding['name'],
-            'symbol': holding['symbol'],
-            'contract': contract,
-            'balance': holding['balance'],
-            'risk_flags': [],
-            'risk_score': 0
+        print(f"\n🔍 Starting risk analysis for {address[:8]}...")
+        
+        # Get wallet holdings
+        token_holdings = get_token_balances(address)
+        
+        if not token_holdings:
+            return jsonify({
+                'address': address,
+                'risk_score': 0,
+                'risk_level': 'SAFE',
+                'message': 'No token holdings found',
+                'risky_tokens': []
+            })
+        
+        risky_tokens = []
+        total_risk_points = 0
+        max_possible_points = 0
+        
+        # Analyze each token (limit to first 10 to avoid rate limits)
+        tokens_to_analyze = token_holdings[:10]
+        
+        for holding in tokens_to_analyze:
+            contract = holding['contract']
+            print(f"\n📊 Analyzing {holding['symbol']} ({contract[:8]}...)")
+            
+            token_risk = {
+                'name': holding['name'],
+                'symbol': holding['symbol'],
+                'contract': contract,
+                'balance': holding['balance'],
+                'risk_flags': [],
+                'risk_score': 0
+            }
+            
+            # Check 1: Token age (newer = riskier)
+            token_info = get_token_info(contract)
+            if token_info['token_age_days'] is not None:
+                age_days = token_info['token_age_days']
+                if age_days < 7:
+                    token_risk['risk_flags'].append(f'Very new token (only {int(age_days)} days old)')
+                    token_risk['risk_score'] += 30
+                elif age_days < 30:
+                    token_risk['risk_flags'].append(f'New token ({int(age_days)} days old)')
+                    token_risk['risk_score'] += 15
+                print(f"  Age: {int(age_days)} days")
+            
+            time.sleep(0.3)
+            
+            # Check 2: Honeypot detection
+            honeypot_data = check_honeypot(contract)
+            if honeypot_data:
+                if honeypot_data['is_honeypot']:
+                    token_risk['risk_flags'].append('HONEYPOT DETECTED - Cannot sell!')
+                    token_risk['risk_score'] += 50
+                
+                if honeypot_data['sell_tax'] > 10:
+                    token_risk['risk_flags'].append(f'High sell tax: {honeypot_data["sell_tax"]}%')
+                    token_risk['risk_score'] += 20
+                
+                if not honeypot_data['has_trading_enabled']:
+                    token_risk['risk_flags'].append('No liquidity available')
+                    token_risk['risk_score'] += 25
+                
+                print(f"  Honeypot: {honeypot_data['is_honeypot']}, Sell tax: {honeypot_data['sell_tax']}%")
+            
+            time.sleep(0.3)
+            
+            # Check 3: Number of holders (fewer = riskier)
+            holder_count = get_token_holders_count(contract)
+            if holder_count < 10:
+                token_risk['risk_flags'].append(f'Very few holders (only {holder_count} in recent activity)')
+                token_risk['risk_score'] += 25
+            elif holder_count < 50:
+                token_risk['risk_flags'].append(f'Low holder count ({holder_count} in recent activity)')
+                token_risk['risk_score'] += 10
+            
+            print(f"  Active holders: {holder_count}")
+            
+            time.sleep(0.3)
+            
+            # Check 4: Unknown/no price = potentially worthless
+            if holding.get('price_usd', 0) == 0 and holding['symbol'] not in ['USDT', 'USDC', 'DAI']:
+                token_risk['risk_flags'].append('No market price data available')
+                token_risk['risk_score'] += 15
+            
+            # Add to risky tokens if any flags
+            if token_risk['risk_flags']:
+                risky_tokens.append(token_risk)
+                total_risk_points += token_risk['risk_score']
+            
+            max_possible_points += 100
+        
+        # Calculate overall wallet risk score (0-100)
+        if max_possible_points > 0:
+            risk_score = min(100, int((total_risk_points / max_possible_points) * 100))
+        else:
+            risk_score = 0
+        
+        # Determine risk level
+        if risk_score >= 70:
+            risk_level = 'CRITICAL'
+        elif risk_score >= 50:
+            risk_level = 'HIGH'
+        elif risk_score >= 30:
+            risk_level = 'MEDIUM'
+        elif risk_score >= 10:
+            risk_level = 'LOW'
+        else:
+            risk_level = 'SAFE'
+        
+        # Sort risky tokens by risk score
+        risky_tokens.sort(key=lambda x: x['risk_score'], reverse=True)
+        
+        response = {
+            'address': address,
+            'risk_score': risk_score,
+            'risk_level': risk_level,
+            'tokens_analyzed': len(tokens_to_analyze),
+            'risky_tokens_count': len(risky_tokens),
+            'risky_tokens': risky_tokens,
+            'recommendations': generate_recommendations(risk_level, risky_tokens)
         }
         
-        # Check 1: Token age (newer = riskier)
-        token_info = get_token_info(contract)
-        if token_info['token_age_days'] is not None:
-            age_days = token_info['token_age_days']
-            if age_days < 7:
-                token_risk['risk_flags'].append(f'Very new token (only {int(age_days)} days old)')
-                token_risk['risk_score'] += 30
-            elif age_days < 30:
-                token_risk['risk_flags'].append(f'New token ({int(age_days)} days old)')
-                token_risk['risk_score'] += 15
-            print(f"  Age: {int(age_days)} days")
+        print(f"\n✅ Analysis complete. Risk score: {risk_score} ({risk_level})")
         
-        time.sleep(0.3)
-        
-        # Check 2: Honeypot detection
-        honeypot_data = check_honeypot(contract)
-        if honeypot_data:
-            if honeypot_data['is_honeypot']:
-                token_risk['risk_flags'].append('HONEYPOT DETECTED - Cannot sell!')
-                token_risk['risk_score'] += 50
-            
-            if honeypot_data['sell_tax'] > 10:
-                token_risk['risk_flags'].append(f'High sell tax: {honeypot_data["sell_tax"]}%')
-                token_risk['risk_score'] += 20
-            
-            if not honeypot_data['has_trading_enabled']:
-                token_risk['risk_flags'].append('No liquidity available')
-                token_risk['risk_score'] += 25
-            
-            print(f"  Honeypot: {honeypot_data['is_honeypot']}, Sell tax: {honeypot_data['sell_tax']}%")
-        
-        time.sleep(0.3)
-        
-        # Check 3: Number of holders (fewer = riskier)
-        holder_count = get_token_holders_count(contract)
-        if holder_count < 10:
-            token_risk['risk_flags'].append(f'Very few holders (only {holder_count} in recent activity)')
-            token_risk['risk_score'] += 25
-        elif holder_count < 50:
-            token_risk['risk_flags'].append(f'Low holder count ({holder_count} in recent activity)')
-            token_risk['risk_score'] += 10
-        
-        print(f"  Active holders: {holder_count}")
-        
-        time.sleep(0.3)
-        
-        # Check 4: Unknown/no price = potentially worthless
-        if holding.get('price_usd', 0) == 0 and holding['symbol'] not in ['USDT', 'USDC', 'DAI']:
-            token_risk['risk_flags'].append('No market price data available')
-            token_risk['risk_score'] += 15
-        
-        # Add to risky tokens if any flags
-        if token_risk['risk_flags']:
-            risky_tokens.append(token_risk)
-            total_risk_points += token_risk['risk_score']
-        
-        max_possible_points += 100
+        return jsonify(response)
     
-    # Calculate overall wallet risk score (0-100)
-    if max_possible_points > 0:
-        risk_score = min(100, int((total_risk_points / max_possible_points) * 100))
-    else:
-        risk_score = 0
-    
-    # Determine risk level
-    if risk_score >= 70:
-        risk_level = 'CRITICAL'
-    elif risk_score >= 50:
-        risk_level = 'HIGH'
-    elif risk_score >= 30:
-        risk_level = 'MEDIUM'
-    elif risk_score >= 10:
-        risk_level = 'LOW'
-    else:
-        risk_level = 'SAFE'
-    
-    # Sort risky tokens by risk score
-    risky_tokens.sort(key=lambda x: x['risk_score'], reverse=True)
-    
-    response = {
-        'address': address,
-        'risk_score': risk_score,
-        'risk_level': risk_level,
-        'tokens_analyzed': len(tokens_to_analyze),
-        'risky_tokens_count': len(risky_tokens),
-        'risky_tokens': risky_tokens,
-        'recommendations': generate_recommendations(risk_level, risky_tokens)
-    }
-    
-    print(f"\n✅ Analysis complete. Risk score: {risk_score} ({risk_level})")
-    
-    return jsonify(response)
+    except Exception as e:
+        print(f"Error in risk analysis: {e}")
+        return jsonify({
+            'address': address,
+            'error': 'Risk analysis failed',
+            'message': str(e)
+        }), 500
 
 def generate_recommendations(risk_level, risky_tokens):
     """Generate actionable recommendations based on risk analysis"""
@@ -669,10 +706,30 @@ def generate_recommendations(risk_level, risky_tokens):
     if no_price_count > 0:
         recommendations.append(f'💸 {no_price_count} token(s) have no market price - likely worthless')
     
-    if risk_level == 'SAFE':
-        recommendations.append('✅ Your wallet looks healthy!')
+    # if risk_level == 'SAFE':
+    #     recommendations.append('✅ Your wallet looks healthy!')
     
-    return recommendations
+    # return recommendations
+
+@app.route('/api/stats', methods=['GET'])
+def stats():
+    # Dummy for now, real logic should read/write from persistent store when ready
+    demo_wallets = [
+        '0x742d35cc6634c0532925a3b844bc454e4438f44e',
+        '0x8bA1f109551bD432803012645Ac136ddd64DBA72',
+        '0x49e833337ecefa0cab47fa4160bed2b8092b5d10',
+        '0x8576acc5c05d6ce88f4e49bf65bdf0c62f91353c',
+        '0x21a31ee1afc51d94c2efccaa2092ad1028285549',
+    ]
+    wallets_analyzed = len(demo_wallets)
+    users_protected = len(set(w.lower() for w in demo_wallets))
+    scams_detected = 0  # For now, unless tracked persistently
+
+    return jsonify({
+        'wallets_analyzed': wallets_analyzed,
+        'users_protected': users_protected,
+        'scams_detected': scams_detected
+    })
 
 @app.route('/api/health', methods=['GET'])
 def health_check():
