@@ -12,6 +12,7 @@ import { demoWallets } from '@/lib/demo-data'
 import Logo from '@/components/Logo'
 import DeleteInstructions from '@/components/DeleteInstructions'
 import WalletProvider, { useWallets } from '@/components/WalletProvider'
+import Pagination from '@/components/Pagination'
 
 export default function WalletsPage() {
   // const [wallets, setWallets] = useState<WalletData[]>([])
@@ -78,7 +79,7 @@ export default function WalletsPage() {
     setSelectedWallet(remainingWallets.length > 0 ? remainingWallets[0] : null)
   }
 
-  const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null)
+  const [lastSyncTime, setLastSyncTime] = useState<Date | undefined>(undefined)
 
   useEffect(() => {
     // Load real data from the beginning
