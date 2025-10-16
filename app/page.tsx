@@ -1,11 +1,16 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import useSWR from 'swr'
-import { statsApi } from '@/lib/api'
+import { useState } from 'react'
 import { ArrowRight, Shield, Eye, TrendingUp, Wallet, CheckCircle, Star } from 'lucide-react'
 import Link from 'next/link'
 import Logo from '@/components/Logo'
+
+// Constants for statistics
+const STATS = {
+  scamsDetected: '1.3K+',
+  users: '1K+',
+  walletsScanned: '10K+'
+}
 
 export default function LandingPage() {
   const [email, setEmail] = useState('')
@@ -28,7 +33,6 @@ export default function LandingPage() {
     }
   ]
 
-  const { data: stats, isLoading: statsLoading } = useSWR('stats', statsApi.getStats, { refreshInterval: 5000 })
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -64,14 +68,11 @@ export default function LandingPage() {
               Start Analyzing
               <ArrowRight className="w-5 h-5" />
             </Link>
-            <a
-              href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" // Replace with your real demo
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
               className="px-6 py-4 border border-primary text-primary rounded-lg hover:bg-primary/10 transition font-medium ml-4"
             >
               Watch Demo
-            </a>
+            </button>
           </div>
         </div>
       </section>
@@ -80,38 +81,26 @@ export default function LandingPage() {
       <section className="py-16 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            {/* Wallets Analyzed */}
+            {/* Wallets Scanned */}
             <div>
               <div className="text-3xl font-bold text-primary mb-2">
-                {statsLoading ? (
-                  <span className="inline-block h-8 w-32 bg-muted rounded-xl animate-pulse" />
-                ) : (
-                  stats?.wallets_analyzed ?? 0
-                )}
+                {STATS.walletsScanned}
               </div>
-              <div className="text-muted-foreground">Wallets Analyzed</div>
+              <div className="text-muted-foreground">Wallets Scanned</div>
             </div>
             {/* Scams Detected */}
             <div>
               <div className="text-3xl font-bold text-primary mb-2">
-                {statsLoading ? (
-                  <span className="inline-block h-8 w-32 bg-muted rounded-xl animate-pulse" />
-                ) : (
-                  stats?.scams_detected ?? 0
-                )}
+                {STATS.scamsDetected}
               </div>
               <div className="text-muted-foreground">Scams Detected</div>
             </div>
-            {/* Users Protected */}
+            {/* Users */}
             <div>
               <div className="text-3xl font-bold text-primary mb-2">
-                {statsLoading ? (
-                  <span className="inline-block h-8 w-32 bg-muted rounded-xl animate-pulse" />
-                ) : (
-                  stats?.users_protected ?? 0
-                )}
+                {STATS.users}
               </div>
-              <div className="text-muted-foreground">Users Protected</div>
+              <div className="text-muted-foreground">Users</div>
             </div>
           </div>
         </div>
