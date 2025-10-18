@@ -58,7 +58,7 @@ export default function LandingPage() {
         <div className="absolute top-0 left-0 right-0 z-30 p-6">
           <div className="flex justify-between items-center">
             {/* Logo - Top Left with more margin */}
-            <div className="flex items-center ml-8 mt-4">
+            <div className="flex items-center ml-8 mt-4 animate-in fade-in slide-in-from-left-8 duration-1000 delay-200">
               <Image
                 src="/verifil.png"
                 alt="Verifil"
@@ -70,7 +70,7 @@ export default function LandingPage() {
 
             {/* Get Started Button - Top Right */}
             <Link href="/portfolio" passHref>
-              <button className="px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition backdrop-blur-sm">
+              <button className="px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition backdrop-blur-sm animate-in fade-in slide-in-from-right-8 duration-1000 delay-300">
                 Get Started
               </button>
             </Link>
@@ -80,13 +80,13 @@ export default function LandingPage() {
         {/* Content - Left Aligned with Right Image */}
         <div className="w-full relative z-20 flex items-center gap-16 pl-16 pr-12">
           <div className="max-w-2xl text-left flex-shrink-0">
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
               <span className="text-white">Verifil</span>
             </h1>
-            <p className="text-xl md:text-2xl text-white mb-10 leading-relaxed font-light">
+            <p className="text-xl md:text-2xl text-white mb-10 leading-relaxed font-light animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-700">
               Advanced blockchain security that protects your crypto investments from scams, honeypots, and risky tokens with real-time analysis.
             </p>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-900">
               <Link
                 href="/wallets"
                 className="bg-primary text-primary-foreground px-10 py-4 rounded-xl text-xl font-bold hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 flex items-center gap-3 shadow-2xl w-fit"
@@ -103,7 +103,7 @@ export default function LandingPage() {
           </div>
 
           {/* Demonstration Image - Positioned More to the Right */}
-          <div className="flex-1 max-w-3xl ml-16">
+          <div className="flex-1 max-w-3xl ml-16 animate-in fade-in slide-in-from-right-12 duration-1200 delay-600">
             <Image
               src="/demonstration.png"
               alt="Verifil Dashboard Demonstration"
