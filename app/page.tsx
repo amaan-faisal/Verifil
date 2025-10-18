@@ -1,9 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { ArrowRight, Shield, Eye, TrendingUp, Wallet, CheckCircle, Star } from 'lucide-react'
+import { ArrowRight, Shield, Eye, TrendingUp, Wallet } from 'lucide-react'
 import Link from 'next/link'
-import Logo from '@/components/Logo'
+import Image from 'next/image'
 
 // Constants for statistics
 const STATS = {
@@ -13,7 +12,6 @@ const STATS = {
 }
 
 export default function LandingPage() {
-  const [email, setEmail] = useState('')
 
   const features = [
     {
@@ -36,43 +34,83 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {/* Navigation */}
-      <nav className="border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Logo size="md" />
-            {/* Only one top-right action if destination is the same */}
+      {/* Hero Section - Full Screen with Video Background */}
+      <section className="h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        {/* Background Video */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover z-0"
+          style={{
+            filter: 'brightness(0.7) contrast(1.1) saturate(1.2)',
+            objectPosition: 'center center'
+          }}
+        >
+          <source src="/backgroundvid.mp4" type="video/mp4" />
+        </video>
+
+        {/* Dark overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/40 z-10"></div>
+
+        {/* Floating Navigation Elements */}
+        <div className="absolute top-0 left-0 right-0 z-30 p-6">
+          <div className="flex justify-between items-center">
+            {/* Logo - Top Left with more margin */}
+            <div className="flex items-center ml-8 mt-4">
+              <Image
+                src="/verifil.png"
+                alt="Verifil"
+                width={64}
+                height={64}
+                className="h-16 w-16 rounded-lg"
+              />
+            </div>
+
+            {/* Get Started Button - Top Right */}
             <Link href="/portfolio" passHref>
-              <button className="px-6 py-2 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition">Get Started</button>
+              <button className="px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition backdrop-blur-sm">
+                Get Started
+              </button>
             </Link>
           </div>
         </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Secure Your Crypto
-            <span className="text-primary block">Portfolio</span>
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            VeriFil analyzes your Ethereum wallets to detect scams, honeypots, and risky tokens.
-            Protect your investments with real-time risk assessment.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/wallets"
-              className="bg-primary text-primary-foreground px-8 py-4 rounded-lg text-lg font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
-            >
-              Start Analyzing
-              <ArrowRight className="w-5 h-5" />
-            </Link>
-            <button
-              className="px-6 py-4 border border-primary text-primary rounded-lg hover:bg-primary/10 transition font-medium ml-4"
-            >
-              Watch Demo
-            </button>
+        {/* Content - Left Aligned with Right Image */}
+        <div className="w-full relative z-20 flex items-center gap-16 pl-16 pr-12">
+          <div className="max-w-2xl text-left flex-shrink-0">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight">
+              <span className="text-white">Verifil</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-white mb-10 leading-relaxed font-light">
+              Advanced blockchain security that protects your crypto investments from scams, honeypots, and risky tokens with real-time analysis.
+            </p>
+            <div className="flex flex-col gap-4">
+              <Link
+                href="/wallets"
+                className="bg-primary text-primary-foreground px-10 py-4 rounded-xl text-xl font-bold hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 flex items-center gap-3 shadow-2xl w-fit"
+              >
+                Start Analyzing
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+              <button
+                className="px-8 py-4 border-2 border-white text-white rounded-xl hover:bg-white/10 transition-all duration-300 font-semibold text-lg backdrop-blur-sm w-fit"
+              >
+                Watch Demo
+              </button>
+            </div>
+          </div>
+
+          {/* Demonstration Image - Positioned More to the Right */}
+          <div className="flex-1 max-w-3xl ml-16">
+            <Image
+              src="/demonstration.png"
+              alt="Verifil Dashboard Demonstration"
+              width={800}
+              height={600}
+              className="w-full h-auto rounded-xl shadow-2xl"
+            />
           </div>
         </div>
       </section>
@@ -197,7 +235,18 @@ export default function LandingPage() {
       <footer className="border-t border-border py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <Logo size="md" />
+            <div className="flex items-center gap-2">
+              <Image
+                src="/verifil.png"
+                alt="Verifil"
+                width={32}
+                height={32}
+                className="h-8 w-8"
+              />
+              <span className="font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent text-xl">
+                VeriFil
+              </span>
+            </div>
             <div className="flex gap-6 text-sm text-muted-foreground">
               <Link href="/portfolio" className="hover:text-foreground transition-colors">
                 Portfolio
@@ -211,7 +260,7 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-border text-center text-sm text-muted-foreground">
-            © 2025 VeriFil. All rights reserved. Built for crypto security.
+            © 2024 VeriFil. All rights reserved. Built for crypto security.
           </div>
         </div>
       </footer>
