@@ -25,6 +25,7 @@ const useIntersectionObserver = (options: IntersectionObserverInit = {}) => {
         // Reset when scrolling away to enable re-loading
         setIsIntersecting(false);
         setHasIntersected(false);
+        //empty
       }
     }, {
       threshold: 0.3,
