@@ -361,6 +361,13 @@ export default function LandingPage() {
                   className={`group relative text-center p-6 rounded-lg border border-border hover:bg-secondary/50 transition-all duration-500 hover:scale-105 hover:shadow-lg overflow-hidden ${
                     featuresLoaded ? `feature-card-${index + 1}` : 'feature-card-hidden'
                   }`}
+<<<<<<< HEAD
+=======
+                  style={{ 
+                    animationDelay: featuresLoaded ? animationDelays[index] : '0s',
+                    opacity: featuresLoaded ? 1 : 0
+                  }}
+>>>>>>> db2c8bb313641eed7003456edc868c3179327f62
                 >
                   <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors duration-300">
                     <feature.icon className="w-6 h-6 text-primary group-hover:scale-110 transition-transform duration-300" />
