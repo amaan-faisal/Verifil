@@ -54,11 +54,11 @@ export default function StatusIndicators({ wallets, lastSyncTime }: StatusIndica
   return (
     <div className="mb-8 space-y-4">
       {/* Live Data Indicator */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-lg">
+      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-lg hover:scale-105 hover:shadow-lg hover:shadow-green-500/20 transition-all duration-300 cursor-pointer group">
         <div className="flex items-center gap-2">
           <div className="relative">
-            <Zap className="w-4 h-4 text-green-400" />
-            <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <Zap className="w-4 h-4 text-green-400 group-hover:scale-110 transition-transform duration-300" />
+            <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse group-hover:animate-bounce"></div>
           </div>
           <span className="text-sm font-medium text-green-400">Live Data</span>
         </div>
@@ -70,16 +70,16 @@ export default function StatusIndicators({ wallets, lastSyncTime }: StatusIndica
       </div>
 
       {/* Tax Progress */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-lg">
+      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-lg hover:scale-105 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 cursor-pointer group">
         <div className="flex items-center gap-2">
-          <Clock className="w-4 h-4 text-blue-400" />
-          <span className="text-sm font-medium text-blue-400">{currentYear} Taxes in progress</span>
+          <Clock className="w-4 h-4 text-blue-400 group-hover:rotate-12 transition-transform duration-300" />
+          <span className="text-sm font-medium text-blue-400 group-hover:text-blue-300 transition-colors duration-300">{currentYear} Taxes in progress</span>
         </div>
         <div className="ml-auto">
           <div className="text-xs text-muted-foreground mb-1">{taxProgress}% complete</div>
           <div className="w-16 h-1 bg-muted rounded-full overflow-hidden">
             <div 
-              className="h-full bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full transition-all duration-300"
+              className="h-full bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full transition-all duration-300 group-hover:from-blue-300 group-hover:to-cyan-300"
               style={{ width: `${taxProgress}%` }}
             ></div>
           </div>
@@ -87,12 +87,12 @@ export default function StatusIndicators({ wallets, lastSyncTime }: StatusIndica
       </div>
 
       {/* Earnings Available */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-lg">
+      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-lg hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 cursor-pointer group">
         <div className="flex items-center gap-2">
-          <DollarSign className="w-4 h-4 text-purple-400" />
-          <span className="text-sm font-medium text-purple-400">Earn up to ${earningsAvailable}</span>
+          <DollarSign className="w-4 h-4 text-purple-400 group-hover:scale-125 group-hover:rotate-6 transition-transform duration-300" />
+          <span className="text-sm font-medium text-purple-400 group-hover:text-purple-300 transition-colors duration-300">Earn up to ${earningsAvailable}</span>
         </div>
-        <div className="ml-auto text-xs text-muted-foreground">
+        <div className="ml-auto text-xs text-muted-foreground group-hover:text-purple-400 transition-colors duration-300">
           Available
         </div>
       </div>

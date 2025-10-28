@@ -215,7 +215,7 @@ export default function TransactionsPage() {
                   fetchTransactions(e.target.value)
                 }}
                 className="w-full px-4 py-2 pr-8 bg-card border border-border rounded-lg appearance-none"
-                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
+                style={{display: 'none', backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
               >
                 {wallets.map((wallet) => (
                   <option key={wallet.address} value={wallet.address}>
@@ -242,7 +242,7 @@ export default function TransactionsPage() {
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
               className="px-4 py-2 pr-8 bg-card border border-border rounded-lg appearance-none"
-              style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
+              style={{ display: 'none', backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
             >
               <option value="all">All Transactions</option>
               <option value="sent">Sent</option>
@@ -269,7 +269,7 @@ export default function TransactionsPage() {
             </div>
           ) : (
             <>
-              <div className="bg-card rounded-lg border border-border overflow-hidden">
+              <div className="bg-card rounded-lg border border-border overflow-hidden hover:shadow-lg transition-all duration-300">
                 <table className="w-full">
                   <thead className="bg-muted/50">
                     <tr>
@@ -297,7 +297,7 @@ export default function TransactionsPage() {
                     {paginatedTransactions.map((tx) => {
                       const txType = getTransactionType(tx)
                       return (
-                        <tr key={tx.hash} className="hover:bg-muted/30 transition-colors">
+                        <tr key={tx.hash} className="hover:bg-muted/30 hover:scale-[1.02] transition-all duration-300 cursor-pointer">
                           <td className="px-6 py-4 whitespace-nowrap">
                             <span className={`text-sm font-medium ${txType.color}`}>
                               {txType.type.toUpperCase()}

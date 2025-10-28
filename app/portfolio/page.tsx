@@ -190,28 +190,28 @@ export default function PortfolioPage() {
             <>
               {/* Portfolio Stats */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div className="bg-card border border-border rounded-lg p-6">
+                <div className="bg-card border border-border rounded-lg p-6 hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer">
                   <div className="flex items-center gap-3 mb-2">
                     <DollarSign className="w-5 h-5 text-green-400" />
                     <span className="text-sm text-muted-foreground">Total Value</span>
                   </div>
                   <div className="text-2xl font-bold">${totalValue.toLocaleString()}</div>
                 </div>
-                <div className="bg-card border border-border rounded-lg p-6">
+                <div className="bg-card border border-border rounded-lg p-6 hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer">
                   <div className="flex items-center gap-3 mb-2">
                     <Wallet className="w-5 h-5 text-blue-400" />
                     <span className="text-sm text-muted-foreground">ETH Balance</span>
                   </div>
                   <div className="text-2xl font-bold">{totalETH.toFixed(4)} ETH</div>
                 </div>
-                <div className="bg-card border border-border rounded-lg p-6">
+                <div className="bg-card border border-border rounded-lg p-6 hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer">
                   <div className="flex items-center gap-3 mb-2">
                     <PieChart className="w-5 h-5 text-purple-400" />
                     <span className="text-sm text-muted-foreground">Token Value</span>
                   </div>
                   <div className="text-2xl font-bold">${totalTokens.toLocaleString()}</div>
                 </div>
-                <div className="bg-card border border-border rounded-lg p-6">
+                <div className="bg-card border border-border rounded-lg p-6 hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer">
                   <div className="flex items-center gap-3 mb-2">
                     <Eye className="w-5 h-5 text-orange-400" />
                     <span className="text-sm text-muted-foreground">Total Holdings</span>
@@ -222,7 +222,7 @@ export default function PortfolioPage() {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Portfolio Distribution */}
-                <div className="bg-card border border-border rounded-lg p-6">
+                <div className="bg-card border border-border rounded-lg p-6 hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer">
                   <h3 className="text-lg font-semibold mb-4">Portfolio Distribution</h3>
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
@@ -255,7 +255,7 @@ export default function PortfolioPage() {
                 </div>
 
                 {/* Risk Assessment */}
-                <div className="bg-card border border-border rounded-lg p-6">
+                <div className="bg-card border border-border rounded-lg p-6 hover:scale-105 hover:shadow-lg transition-all duration-300 cursor-pointer">
                   <h3 className="text-lg font-semibold mb-4">Risk Assessment</h3>
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
@@ -289,7 +289,7 @@ export default function PortfolioPage() {
                   <h3 className="text-lg font-semibold mb-4">Top Holdings</h3>
                   <div className="space-y-3">
                     {topHoldings.map((holding, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                      <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg hover:scale-102 hover:shadow-md transition-all duration-300 cursor-pointer">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center">
                             <span className="text-sm font-bold">{holding.symbol.charAt(0)}</span>
@@ -317,7 +317,7 @@ export default function PortfolioPage() {
                   <h3 className="text-lg font-semibold mb-4">Wallet Summary</h3>
                   <div className="space-y-3">
                     {wallets.map((wallet, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                      <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg hover:scale-102 hover:shadow-md transition-all duration-300 cursor-pointer">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 bg-muted rounded-lg flex items-center justify-center">
                             <Wallet className="w-4 h-4" />

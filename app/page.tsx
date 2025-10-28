@@ -1,8 +1,48 @@
 'use client'
 
-import { ArrowRight, Shield, Eye, TrendingUp, Wallet } from 'lucide-react'
+import React, {useState, useEffect, useRef} from 'react';
+import './page.css'
+import { ArrowRight, Shield, Eye, TrendingUp, Wallet, Users, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
+import Logo from "../components/Logo"
+
+// Custom hook for intersection observer
+const useIntersectionObserver = (options: IntersectionObserverInit = {}) => {
+  const [isIntersecting, setIsIntersecting] = useState(false);
+  const [hasIntersected, setHasIntersected] = useState(false);
+  const ref = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsIntersecting(true);
+        setHasIntersected(true);
+      } else {
+        // Reset when scrolling away to enable re-loading
+        setIsIntersecting(false);
+        setHasIntersected(false);
+      }
+    }, {
+      threshold: 0.3,
+      rootMargin: '100px 100px 100px 100px',
+      ...options
+    });
+
+    observer.observe(element);
+
+    return () => {
+      if (element) {
+        observer.unobserve(element);
+      }
+    };
+  }, [options]);
+
+  return [ref, isIntersecting] as const;
+};
 
 // Constants for statistics
 const STATS = {
@@ -12,6 +52,51 @@ const STATS = {
 }
 
 export default function LandingPage() {
+
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLLIElement>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    setIsOpen(true);
+  };
+  
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setIsOpen(false);
+    }, 150); // Small delay to prevent flickering
+  };
+
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // if scrolled more than 50px, activate animation
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    // cleanup on unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Section loading states
+  const [stats1Ref, stats1Loaded] = useIntersectionObserver();
+  const [stats2Ref, stats2Loaded] = useIntersectionObserver();
+  const [stats3Ref, stats3Loaded] = useIntersectionObserver();
+  const [featuresRef, featuresLoaded] = useIntersectionObserver();
+  const [howItWorksRef, howItWorksLoaded] = useIntersectionObserver();
+  const [ctaRef, ctaLoaded] = useIntersectionObserver();
+  const [footerRef, footerLoaded] = useIntersectionObserver();
 
   const features = [
     {
@@ -55,38 +140,76 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-black/40 z-10"></div>
 
         {/* Floating Navigation Elements */}
-        <div className="absolute top-0 left-0 right-0 z-30 p-6">
+        <div id="navbarani" className={`navbar ${isScrolled ? "navbar--scrolled" : ""} absolute top-0 left-0 right-0 z-30 p-6`} >
           <div className="flex justify-between items-center">
             {/* Logo - Top Left with more margin */}
-            <div className="flex items-center ml-8 mt-4 animate-in fade-in slide-in-from-left-8 duration-1000 delay-200">
-              <Image
-                src="/verifil.png"
-                alt="Verifil"
-                width={64}
-                height={64}
-                className="h-16 w-16 rounded-lg"
-              />
-            </div>
+            <div className="mb-8" id='logo-icon'>
+              <Link href="/" className="flex items-center gap-2">
+                <Logo  size="md" />
+              </Link>
+          </div>
 
             {/* Get Started Button - Top Right */}
-            <Link href="/portfolio" passHref>
-              <button className="px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition backdrop-blur-sm animate-in fade-in slide-in-from-right-8 duration-1000 delay-300">
-                Get Started
-              </button>
-            </Link>
+            <div style={{display: 'flex', gap: '20px'}}>
+
+              <nav className="navbars">
+                <ul>
+                  <li className="dropdown" ref={dropdownRef} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+                    <button className="dropbtn">
+                      Logistics
+                      <span className={`arrow ${isOpen ? "rotate" : ""}`}>▲</span>
+                    </button>
+
+                    {isOpen && (
+                      <div className="dropdown-content">
+                        <Link href="/portfolio" className="item">
+                          <h4>Portfolio Tracking</h4>
+                          <p>Sustainable investment metrics.</p>
+                        </Link>
+                        <Link href="/wallets" className="item">
+                          <h4>Wallet Management</h4>
+                          <p>Community-verified security practices</p>
+                        </Link>
+                        <Link href="/transactions" className="item">
+                          <h4>Transaction History</h4>
+                          <p>Environmental impact tracking</p>
+                        </Link>
+                      </div>
+                    )}
+                  </li>
+
+                  <li><Link href="/safety">Safety</Link></li>
+                  <li><Link href="/about">About</Link></li>
+                </ul>
+              </nav>
+              <Link href="/portfolio" passHref>
+                <button className="px-8 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition backdrop-blur-sm animate-in fade-in slide-in-from-right-8 duration-1000 delay-300">
+                  Get Started
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
 
         {/* Content - Left Aligned with Right Image */}
         <div className="w-full relative z-20 flex items-center gap-16 pl-16 pr-12">
           <div className="max-w-2xl text-left flex-shrink-0">
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
+            <h1 
+              className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight hero-text-animation"
+              style={{ animationDelay: '0.3s', opacity: 0 }}
+            >
               <span className="text-white">Verifil</span>
             </h1>
-            <p className="text-xl md:text-2xl text-white mb-10 leading-relaxed font-light animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-700">
+            <p 
+              className="text-xl md:text-2xl text-white mb-10 leading-relaxed font-light hero-text-animation"
+              style={{ animationDelay: '0.6s', opacity: 0 }}
+            >
               Advanced blockchain security that protects your crypto investments from scams, honeypots, and risky tokens with real-time analysis.
             </p>
-            <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-900">
+            <div 
+              className="flex flex-col gap-4 hero-buttons-animation"
+              style={{ animationDelay: '0.9s', opacity: 0 }}
+            >
               <Link
                 href="/wallets"
                 className="bg-primary text-primary-foreground px-10 py-4 rounded-xl text-xl font-bold hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 flex items-center gap-3 shadow-2xl w-fit"
@@ -103,7 +226,10 @@ export default function LandingPage() {
           </div>
 
           {/* Demonstration Image - Positioned More to the Right */}
-          <div className="flex-1 max-w-3xl ml-16 animate-in fade-in slide-in-from-right-12 duration-1200 delay-600">
+          <div 
+            className="flex-1 max-w-3xl ml-16 hero-image-animation"
+            style={{ animationDelay: '0.4s', opacity: 0 }}
+          >
             <Image
               src="/demonstration.png"
               alt="Verifil Dashboard Demonstration"
@@ -115,26 +241,66 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-muted/30">
+      {/* Stats Section 1 - Wallets Scanned */}
+      <section 
+        ref={stats1Ref}
+        className={`py-16 bg-muted/30 section-loading ${stats1Loaded ? 'section-loaded' : ''} section-delay-1 `}
+        style={{ paddingBottom: '200px', paddingTop: '200px', backgroundColor: '#080808' }}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            {/* Wallets Scanned */}
-            <div>
+          <div className="flex flex-col text-center max-w-md mx-auto">
+            <div className={`stats-sequential-load ${stats1Loaded ? 'loaded' : ''}`}>
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25 border border-blue-400/20 hover:scale-110 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300">
+                  <Wallet className="w-8 h-8 text-white drop-shadow-sm" />
+                </div>
+              </div>
               <div className="text-3xl font-bold text-primary mb-2">
                 {STATS.walletsScanned}
               </div>
               <div className="text-muted-foreground">Wallets Scanned</div>
             </div>
-            {/* Scams Detected */}
-            <div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section 2 - Scams Detected */}
+      <section 
+        ref={stats2Ref}
+        className={`py-16 bg-muted/30 section-loading ${stats2Loaded ? 'section-loaded' : ''} section-delay-2`}
+        style={{ paddingBottom: '200px', paddingTop: '200px', backgroundColor: '#080808' }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col text-center max-w-md mx-auto">
+            <div className={`stats-sequential-load ${stats2Loaded ? 'loaded' : ''}`}>
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg shadow-red-500/25 border border-red-400/20 hover:scale-110 hover:shadow-xl hover:shadow-red-500/40 transition-all duration-300">
+                  <AlertTriangle className="w-8 h-8 text-white drop-shadow-sm" />
+                </div>
+              </div>
               <div className="text-3xl font-bold text-primary mb-2">
                 {STATS.scamsDetected}
               </div>
               <div className="text-muted-foreground">Scams Detected</div>
             </div>
-            {/* Users */}
-            <div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section 3 - Users */}
+      <section 
+        ref={stats3Ref}
+        className={`py-16 bg-muted/30 section-loading ${stats3Loaded ? 'section-loaded' : ''} section-delay-3`}
+        style={{ paddingBottom: '200px', paddingTop: '200px', backgroundColor: '#080808' }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col text-center max-w-md mx-auto">
+            <div className={`stats-sequential-load ${stats3Loaded ? 'loaded' : ''}`}>
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/25 border border-green-400/20 hover:scale-110 hover:shadow-xl hover:shadow-green-500/40 transition-all duration-300">
+                  <Users className="w-8 h-8 text-white drop-shadow-sm" />
+                </div>
+              </div>
               <div className="text-3xl font-bold text-primary mb-2">
                 {STATS.users}
               </div>
@@ -145,32 +311,95 @@ export default function LandingPage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section 
+        ref={featuresRef}
+        className={`py-20 px-4 sm:px-6 lg:px-8 section-loadings ${featuresLoaded ? 'section-loaded' : ''} section-delay-2`}
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Why Choose VeriFil?
+              Why Choose Verifil?
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Advanced blockchain analysis tools to keep your crypto investments safe
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <div key={index} className="text-center p-6 rounded-lg border border-border hover:bg-secondary/50 transition-colors">
-                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <feature.icon className="w-6 h-6 text-primary" />
+            {features.map((feature, index) => {
+              const animationDelays = ['0.3s', '0.8s', '1.3s'];
+              const hoverContent = [
+                {
+                  title: "Advanced Risk Detection",
+                  details: [
+                    "Honeypot identification",
+                    "Rug pull analysis", 
+                    "Token tax verification",
+                    "Liquidity lock validation"
+                  ]
+                },
+                {
+                  title: "Live Blockchain Data",
+                  details: [
+                    "Real-time balance updates",
+                    "Transaction monitoring",
+                    "Gas fee optimization",
+                    "Network status tracking"
+                  ]
+                },
+                {
+                  title: "Comprehensive Analytics",
+                  details: [
+                    "Portfolio performance metrics",
+                    "Asset allocation insights",
+                    "Historical trend analysis",
+                    "Risk assessment scoring"
+                  ]
+                }
+              ];
+              
+              return (
+                <div 
+                  key={index} 
+                  className={`group relative text-center p-6 rounded-lg border border-border hover:bg-secondary/50 transition-all duration-500 hover:scale-105 hover:shadow-lg overflow-hidden ${
+                    featuresLoaded ? `feature-card-${index + 1}` : 'feature-card-hidden'
+                  }`}
+                  style={{ 
+                    animationDelay: featuresLoaded ? animationDelays[index] : '0s',
+                    opacity: featuresLoaded ? 1 : 0
+                  }}
+                >
+                  <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors duration-300">
+                    <feature.icon className="w-6 h-6 text-primary group-hover:scale-110 transition-transform duration-300" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors duration-300">{feature.title}</h3>
+                  <p className="text-muted-foreground mb-4">{feature.description}</p>
+                  
+                  {/* Hover Content - Hidden until card scales */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500 delay-200 transform scale-95 group-hover:scale-100">
+                    <div className="h-full p-6 bg-card/95 backdrop-blur-sm rounded-lg border border-border/50 flex flex-col justify-center">
+                      <h4 className="font-semibold text-lg mb-4 text-primary text-center">{hoverContent[index].title}</h4>
+                      <ul className="text-sm text-muted-foreground space-y-2">
+                        {hoverContent[index].details.map((detail, detailIndex) => (
+                          <li key={detailIndex} className="flex items-center">
+                            <span className="w-2 h-2 bg-primary rounded-full mr-3 flex-shrink-0"></span>
+                            {detail}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground">{feature.description}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* How It Works */}
-      <section className="py-20 bg-muted/30">
+      <section 
+        ref={howItWorksRef}
+        className={`py-20 bg-muted/30 section-loadings ${howItWorksLoaded ? 'section-loaded' : ''} section-delay-3`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -181,7 +410,7 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
+            <div className={`text-center ${howItWorksLoaded ? 'how-it-works-card-1' : 'how-it-works-card-hidden'}`}>
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold text-primary-foreground">1</span>
               </div>
@@ -190,7 +419,7 @@ export default function LandingPage() {
                 Add your Ethereum wallet address to start monitoring
               </p>
             </div>
-            <div className="text-center">
+            <div className={`text-center ${howItWorksLoaded ? 'how-it-works-card-2' : 'how-it-works-card-hidden'}`}>
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold text-primary-foreground">2</span>
               </div>
@@ -199,7 +428,7 @@ export default function LandingPage() {
                 Our AI analyzes your holdings for potential risks
               </p>
             </div>
-            <div className="text-center">
+            <div className={`text-center ${howItWorksLoaded ? 'how-it-works-card-3' : 'how-it-works-card-hidden'}`}>
               <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl font-bold text-primary-foreground">3</span>
               </div>
@@ -213,7 +442,10 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
+      <section 
+        ref={ctaRef}
+        className={`py-20 px-4 sm:px-6 lg:px-8 section-loadings ${ctaLoaded ? 'section-loaded' : ''} section-delay-4`}
+      >
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Ready to Secure Your Portfolio?
@@ -232,21 +464,17 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-12 px-4 sm:px-6 lg:px-8">
+      <footer 
+        ref={footerRef}
+        className={`border-t border-border py-12 px-4 sm:px-6 lg:px-8 section-loadings ${footerLoaded ? 'section-loaded' : ''} section-delay-5`}
+      >
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center gap-2">
-              <Image
-                src="/verifil.png"
-                alt="Verifil"
-                width={32}
-                height={32}
-                className="h-8 w-8"
-              />
-              <span className="font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent text-xl">
-                VeriFil
-              </span>
-            </div>
+          <div className="mb-8">
+            <Link href="/" className="flex items-center gap-2">
+              <Logo size="md" />
+            </Link>
+          </div>
             <div className="flex gap-6 text-sm text-muted-foreground">
               <Link href="/portfolio" className="hover:text-foreground transition-colors">
                 Portfolio

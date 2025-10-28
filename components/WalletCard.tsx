@@ -69,7 +69,7 @@ export default function WalletCard({ wallet, isSelected, onClick, onDelete, isEm
       <button
         onClick={onClick}
         onContextMenu={handleRightClick}
-        className={`group w-full p-4 rounded-xl border transition-all duration-200 text-left relative hover:shadow-lg ${
+        className={`group w-full p-4 rounded-xl border transition-all duration-300 text-left relative hover:shadow-lg hover:scale-105 ${
           isSelected
             ? 'bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/30 shadow-lg'
             : isEmpty

@@ -15,8 +15,8 @@ export default function TransactionHistory({ address }: TransactionHistoryProps)
   const [isLoading, setIsLoading] = useState(false)
   const [filter, setFilter] = useState<'all' | 'eth' | 'tokens'>('all')
   const [txPage, setTxPage] = useState(1);
-  const txPerPage = 10;
-  useEffect(() => { setTxPage(1); }, [address, filter]);
+  const [txPerPage, setTxPerPage] = useState(10);
+  useEffect(() => { setTxPage(1); }, [address, filter, txPerPage]);
 
   useEffect(() => {
     if (address) {
@@ -85,6 +85,16 @@ export default function TransactionHistory({ address }: TransactionHistoryProps)
         <h3 className="text-lg font-semibold">Transaction History</h3>
         <div className="flex gap-2">
           <select
+            value={txPerPage}
+            onChange={(e) => setTxPerPage(Number(e.target.value))}
+            className="px-3 py-1 pr-8 bg-card border border-border rounded-lg text-sm"
+          >
+            <option value={5}>5 per page</option>
+            <option value={10}>10 per page</option>
+            <option value={15}>15 per page</option>
+            <option value={20}>20 per page</option>
+          </select>
+          <select
             value={filter}
             onChange={(e) => setFilter(e.target.value as 'all' | 'eth' | 'tokens')}
             className="px-3 py-1 pr-8 bg-card border border-border rounded-lg text-sm"
@@ -110,7 +120,7 @@ export default function TransactionHistory({ address }: TransactionHistoryProps)
           </div>
         ) : (
           transactions.slice((txPage-1)*txPerPage, txPage*txPerPage).map((tx, index) => (
-            <div key={index} className="bg-card border border-border rounded-lg p-4 hover:bg-secondary/50 transition-colors">
+            <div style={{cursor: 'pointer'}} key={index} className="bg-card border border-border rounded-lg p-4 hover:bg-secondary/50 transition-colors">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {getTransactionIcon(tx)}
@@ -160,6 +170,7 @@ export default function TransactionHistory({ address }: TransactionHistoryProps)
         totalItems={transactions.length}
         setPage={setTxPage}
         itemsPerPage={txPerPage}
+        setItemsPerPage={setTxPerPage}
       />
     </div>
   )
