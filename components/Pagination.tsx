@@ -47,8 +47,8 @@ export default function Pagination({ currentPage, totalItems, setPage, itemsPerP
             >
               <option value={5}>5</option>
               <option value={10}>10</option>
-              <option value={25}>25</option>
-              <option value={50}>50</option>
+              <option value={15}>15</option>
+              <option value={20}>20</option>
             </select>
             <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
           </div>

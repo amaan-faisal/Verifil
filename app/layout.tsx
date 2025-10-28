@@ -6,7 +6,7 @@ import WalletProvider from '@/components/WalletProvider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'VeriFil - Crypto Wallet Tracker',
+  title: 'Verifil - Crypto Wallet Tracker',
   description: 'Track your crypto wallets and analyze token risks',
 }
 

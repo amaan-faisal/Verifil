@@ -91,6 +91,9 @@ export default function AddWalletModal({ onClose, onAdd }: AddWalletModalProps) 
             >
               {isLoading ? 'Adding...' : 'Add Wallet'}
             </button>
+            {isLoading && (
+              <p className="text-xs px-3 py-2 rounded-md border bg-yellow-500/10 border-yellow-500/20 text-yellow-400 animate-pulse text-center mt-2">⚠️ This may take 30+ seconds</p>
+            )}
           </div>
         </form>
       </div>

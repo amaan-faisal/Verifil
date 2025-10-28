@@ -46,6 +46,7 @@ export default function RiskAnalysis({ address }: RiskAnalysisProps) {
             <div className="h-4 bg-muted rounded w-1/2"></div>
             <div className="h-4 bg-muted rounded w-2/3"></div>
           </div>
+          <div className="mt-4 text-sm px-3 py-2 rounded-md border bg-yellow-500/10 border-yellow-500/20 text-yellow-400 animate-pulse">⚠️ This may take 30+ seconds</div>
         </div>
       </div>
     )

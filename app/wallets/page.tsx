@@ -293,10 +293,13 @@ export default function WalletsPage() {
 
             {/* Loading State */}
             {isLoading && (
-              <div className="flex items-center justify-center py-12">
+              <div className="flex flex-col items-center justify-center py-12 gap-3">
                 <div className="flex items-center gap-3">
                   <RefreshCw className="w-6 h-6 animate-spin text-primary" />
                   <span className="text-lg">Loading wallets...</span>
+                </div>
+                <div className="text-sm px-3 py-2 rounded-md border bg-yellow-500/10 border-yellow-500/20 text-yellow-400 animate-pulse">
+                  ⚠️ This may take 30+ seconds
                 </div>
               </div>
             )}
@@ -330,7 +333,7 @@ export default function WalletsPage() {
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 className="px-4 py-2 pr-8 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring appearance-none"
-                style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
+                style={{display: 'none', backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
               >
                 <option value="highest_value">Highest market value</option>
                 <option value="lowest_value">Lowest market value</option>
@@ -438,6 +441,8 @@ export default function WalletsPage() {
           onAdd={handleAddWallet}
         />
       )}
+
+
     </div>
   )
 }
