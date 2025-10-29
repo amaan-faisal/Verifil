@@ -20,7 +20,7 @@ export default function Logo({ size = 'md', showText = true, className = '' }: L
     md: 'text-xl',
     lg: 'text-2xl'
   }
- 
+
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       <div className={`${sizeClasses[size]} relative overflow-hidden rounded-lg logo-rise-fall`}>

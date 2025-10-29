@@ -143,7 +143,7 @@ export default function LandingPage() {
           <div className="flex justify-between items-center">
             {/* Logo - Top Left with more margin */}
             <div className="mb-8" id='logo-icon'>
-              <Link href="/" className="flex items-center gap-2">
+              <Link href="/" className="flex items-center gap-2" id='logo-font-size'>
                 <Logo  size="md" />
               </Link>
           </div>
@@ -191,7 +191,7 @@ export default function LandingPage() {
         </div>
 
         {/* Content - Left Aligned with Right Image */}
-        <div className="w-full relative z-20 flex items-center gap-16 pl-16 pr-12">
+        <div style={{justifyContent: 'center'}} className=" w-full relative z-20 flex items-center gap-16 pl-16 pr-12">
           <div className="max-w-2xl text-left flex-shrink-0">
             <h1 
               className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 leading-tight hero-text-animation"
@@ -249,9 +249,15 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col text-center max-w-md mx-auto">
             <div className={`stats-sequential-load ${stats1Loaded ? 'loaded' : ''}`}>
-              <div className="flex justify-center mb-6">
-                <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-500/25 border border-blue-400/20 hover:scale-110 hover:shadow-xl hover:shadow-blue-500/40 transition-all duration-300">
-                  <Database className="w-12 h-12 text-white drop-shadow-sm" />
+              <div className="flex justify-center mb-6" style={{marginBottom: '0'}}>
+                <div className="w-48 h-48 flex items-center justify-center">
+                  <Image 
+                    src="/walletScanned.png" 
+                    alt="Wallets Scanned" 
+                    width={120} 
+                    height={120} 
+                    className="drop-shadow-lg brightness-150 contrast-110 saturate-150"
+                  />
                 </div>
               </div>
               <div className="text-5xl font-bold text-primary mb-3">
@@ -272,9 +278,15 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col text-center max-w-md mx-auto">
             <div className={`stats-sequential-load ${stats2Loaded ? 'loaded' : ''}`}>
-              <div className="flex justify-center mb-6">
-                <div className="w-24 h-24 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center shadow-lg shadow-red-500/25 border border-red-400/20 hover:scale-110 hover:shadow-xl hover:shadow-red-500/40 transition-all duration-300">
-                  <ShieldAlert className="w-12 h-12 text-white drop-shadow-sm" />
+              <div className="flex justify-center mb-6" style={{marginBottom: '0'}}>
+                <div className="w-48 h-48 flex items-center justify-center">
+                  <Image 
+                    src="/scamDetected.png" 
+                    alt="Scams Detected" 
+                    width={120} 
+                    height={120} 
+                    className="drop-shadow-lg brightness-150 contrast-110 saturate-150"
+                  />
                 </div>
               </div>
               <div className="text-5xl font-bold text-primary mb-3">
@@ -295,9 +307,15 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col text-center max-w-md mx-auto">
             <div className={`stats-sequential-load ${stats3Loaded ? 'loaded' : ''}`}>
-              <div className="flex justify-center mb-6">
-                <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/25 border border-green-400/20 hover:scale-110 hover:shadow-xl hover:shadow-green-500/40 transition-all duration-300">
-                  <Users className="w-12 h-12 text-white drop-shadow-sm" />
+              <div className="flex justify-center mb-6" style={{marginBottom: '0'}}>
+                <div className="w-48 h-48 flex items-center justify-center">
+                  <Image 
+                    src="/users.png" 
+                    alt="Users" 
+                    width={120} 
+                    height={120} 
+                    className="drop-shadow-lg brightness-150 contrast-110 saturate-150"
+                  />
                 </div>
               </div>
               <div className="text-5xl font-bold text-primary mb-3">
