@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: 'Verifil',
   description: 'Secure your crypto wallet through proactive scam detection.',
 }
-//empty 2
+//empty 3
 export default function RootLayout({
   children,
 }: {
