@@ -252,7 +252,7 @@ export default function LandingPage() {
               <div className="flex justify-center mb-6" style={{marginBottom: '0'}}>
                 <div className="w-48 h-48 flex items-center justify-center">
                   <Image 
-                    src="/walletScanned.png" 
+                    src="/walletScan.png" 
                     alt="Wallets Scanned" 
                     width={120} 
                     height={120} 
@@ -281,7 +281,7 @@ export default function LandingPage() {
               <div className="flex justify-center mb-6" style={{marginBottom: '0'}}>
                 <div className="w-48 h-48 flex items-center justify-center">
                   <Image 
-                    src="/scamDetected.png" 
+                    src="/scamDetect.png" 
                     alt="Scams Detected" 
                     width={120} 
                     height={120} 
@@ -310,8 +310,8 @@ export default function LandingPage() {
               <div className="flex justify-center mb-6" style={{marginBottom: '0'}}>
                 <div className="w-48 h-48 flex items-center justify-center">
                   <Image 
-                    src="/users.png" 
-                    alt="Users" 
+                    src="/user.png" 
+                    alt="User" 
                     width={120} 
                     height={120} 
                     className="drop-shadow-lg brightness-150 contrast-110 saturate-150"
