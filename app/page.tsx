@@ -252,7 +252,7 @@ export default function LandingPage() {
               <div className="flex justify-center mb-6" style={{marginBottom: '0'}}>
                 <div className="w-48 h-48 flex items-center justify-center">
                   <Image 
-                    src="/walletScan.png" 
+                    src="/walletscan.png" 
                     alt="Wallets Scanned" 
                     width={120} 
                     height={120} 
