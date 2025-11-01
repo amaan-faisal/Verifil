@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { CheckCircle, Clock, DollarSign, Zap } from 'lucide-react'
+import { Zap } from 'lucide-react'
+import Image from 'next/image'
 
 interface StatusIndicatorsProps {
   wallets: any[]
@@ -72,7 +73,13 @@ export default function StatusIndicators({ wallets, lastSyncTime }: StatusIndica
       {/* Tax Progress */}
       <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20 rounded-lg hover:scale-105 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300 cursor-pointer group">
         <div className="flex items-center gap-2">
-          <Clock className="w-4 h-4 text-blue-400 group-hover:rotate-12 transition-transform duration-300" />
+          <Image 
+            src="/taxesinprogress.png" 
+            alt="Taxes in progress" 
+            width={20} 
+            height={20} 
+            className="group-hover:rotate-12 transition-transform duration-300"
+          />
           <span className="text-sm font-medium text-blue-400 group-hover:text-blue-300 transition-colors duration-300">{currentYear} Taxes in progress</span>
         </div>
         <div className="ml-auto">
@@ -89,7 +96,13 @@ export default function StatusIndicators({ wallets, lastSyncTime }: StatusIndica
       {/* Earnings Available */}
       <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-purple-500/10 to-pink-500/10 border border-purple-500/20 rounded-lg hover:scale-105 hover:shadow-lg hover:shadow-purple-500/20 transition-all duration-300 cursor-pointer group">
         <div className="flex items-center gap-2">
-          <DollarSign className="w-4 h-4 text-purple-400 group-hover:scale-125 group-hover:rotate-6 transition-transform duration-300" />
+          <Image 
+            src="/earnup.png" 
+            alt="Earn up to" 
+            width={20} 
+            height={20} 
+            className="group-hover:scale-125 group-hover:rotate-6 transition-transform duration-300"
+          />
           <span className="text-sm font-medium text-purple-400 group-hover:text-purple-300 transition-colors duration-300">Earn up to ${earningsAvailable}</span>
         </div>
         <div className="ml-auto text-xs text-muted-foreground group-hover:text-purple-400 transition-colors duration-300">
