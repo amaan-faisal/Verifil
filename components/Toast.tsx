@@ -9,7 +9,7 @@ interface ToastProps {
   onClose?: () => void
   shouldExit?: boolean
 }
-//empty2 
+
 export default function Toast({ message, duration = 10000, onClose, shouldExit = false }: ToastProps) {
   const [isVisible, setIsVisible] = useState(true)
   const [isExiting, setIsExiting] = useState(false)

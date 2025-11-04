@@ -291,19 +291,6 @@ export default function WalletsPage() {
               </div>
             </div>
 
-            {/* Loading State */}
-            {isLoading && (
-              <div className="flex flex-col items-center justify-center py-12 gap-3">
-                <div className="flex items-center gap-3">
-                  <RefreshCw className="w-6 h-6 animate-spin text-primary" />
-                  <span className="text-lg">Loading wallets...</span>
-                </div>
-                <div className="text-sm px-3 py-2 rounded-md border bg-yellow-500/10 border-yellow-500/20 text-yellow-400 animate-pulse">
-                  ⚠️ This may take 30+ seconds
-                </div>
-              </div>
-            )}
-
             {/* Sync Status */}
             {syncStatus && (
               <div className={`mb-4 p-3 rounded-lg text-sm ${
@@ -319,7 +306,7 @@ export default function WalletsPage() {
 
             {/* Search and Sort */}
             <div className="flex items-center gap-4">
-              <div className="relative flex-1 max-w-md">
+              <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <input
                   type="text"
@@ -341,6 +328,19 @@ export default function WalletsPage() {
                 <option value="oldest">Oldest</option>
               </select>
             </div>
+
+            {/* Loading State */}
+            {isLoading && (
+              <div className="flex flex-col items-center justify-center py-12 gap-3">
+                <div className="flex items-center gap-3">
+                  <RefreshCw className="w-6 h-6 animate-spin text-primary" />
+                  <span className="text-lg">Loading wallets...</span>
+                </div>
+                <div className="text-sm px-3 py-2 rounded-md border bg-yellow-500/10 border-yellow-500/20 text-yellow-400 animate-pulse">
+                  ⚠️ This may take 30+ seconds
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Content Area */}
