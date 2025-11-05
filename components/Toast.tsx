@@ -13,7 +13,7 @@ interface ToastProps {
 export default function Toast({ message, duration = 10000, onClose, shouldExit = false }: ToastProps) {
   const [isVisible, setIsVisible] = useState(true)
   const [isExiting, setIsExiting] = useState(false)
-
+  //emp
   // Handle auto-dismiss timer
   useEffect(() => {
     if (duration > 0 && !isExiting) {
