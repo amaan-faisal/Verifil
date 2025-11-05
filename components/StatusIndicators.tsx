@@ -13,6 +13,23 @@ export default function StatusIndicators({ wallets, lastSyncTime }: StatusIndica
   const [currentTime, setCurrentTime] = useState(new Date())
   const [taxProgress, setTaxProgress] = useState(0)
   const [earningsAvailable, setEarningsAvailable] = useState(0)
+  const [shouldAnimate, setShouldAnimate] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  // Check if animation has already been shown in this session
+  useEffect(() => {
+    setMounted(true)
+    if (typeof window !== 'undefined') {
+      const hasAnimated = sessionStorage.getItem('statusIndicatorsAnimated')
+      if (!hasAnimated) {
+        // Use requestAnimationFrame to ensure the animation triggers when class is added
+        requestAnimationFrame(() => {
+          setShouldAnimate(true)
+          sessionStorage.setItem('statusIndicatorsAnimated', 'true')
+        })
+      }
+    }
+  }, [])
 
   // Update time every second
   useEffect(() => {
@@ -52,10 +69,13 @@ export default function StatusIndicators({ wallets, lastSyncTime }: StatusIndica
   // Get current year dynamically
   const currentYear = new Date().getFullYear()
 
+  // Only show animation on first mount if not already animated
+  const animationClass = mounted && shouldAnimate ? 'animate-fade-in' : ''
+
   return (
     <div className="mb-8 space-y-4">
       {/* Live Data Indicator */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-green-500/5 to-emerald-500/5 border border-green-500/10 rounded-lg hover:scale-105 hover:shadow-lg hover:shadow-green-500/10 hover:opacity-100 opacity-90 transition-all duration-500 ease-in-out cursor-pointer group animate-fade-in">
+      <div className={`flex items-center gap-3 p-3 bg-gradient-to-r from-green-500/5 to-emerald-500/5 border border-green-500/10 rounded-lg hover:scale-105 hover:shadow-lg hover:shadow-green-500/10 hover:opacity-100 opacity-90 transition-all duration-500 ease-in-out cursor-pointer group ${animationClass}`}>
         <div className="flex items-center gap-2">
           <div className="relative">
             <Zap className="w-4 h-4 text-green-300 group-hover:text-green-200 group-hover:scale-110 transition-all duration-500 ease-in-out" />
@@ -71,7 +91,7 @@ export default function StatusIndicators({ wallets, lastSyncTime }: StatusIndica
       </div>
 
       {/* Tax Progress */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-blue-500/5 to-cyan-500/5 border border-blue-500/10 rounded-lg hover:scale-105 hover:shadow-lg hover:shadow-blue-500/10 hover:opacity-100 opacity-90 transition-all duration-500 ease-in-out cursor-pointer group animate-fade-in">
+      <div className={`flex items-center gap-3 p-3 bg-gradient-to-r from-blue-500/5 to-cyan-500/5 border border-blue-500/10 rounded-lg hover:scale-105 hover:shadow-lg hover:shadow-blue-500/10 hover:opacity-100 opacity-90 transition-all duration-500 ease-in-out cursor-pointer group ${animationClass}`}>
         <div className="flex items-center gap-2">
           <Image 
             src="/taxesinprogress.png" 
@@ -94,7 +114,7 @@ export default function StatusIndicators({ wallets, lastSyncTime }: StatusIndica
       </div>
 
       {/* Earnings Available */}
-      <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-purple-500/5 to-pink-500/5 border border-purple-500/10 rounded-lg hover:scale-105 hover:shadow-lg hover:shadow-purple-500/10 hover:opacity-100 opacity-90 transition-all duration-500 ease-in-out cursor-pointer group animate-fade-in">
+      <div className={`flex items-center gap-3 p-3 bg-gradient-to-r from-purple-500/5 to-pink-500/5 border border-purple-500/10 rounded-lg hover:scale-105 hover:shadow-lg hover:shadow-purple-500/10 hover:opacity-100 opacity-90 transition-all duration-500 ease-in-out cursor-pointer group ${animationClass}`}>
         <div className="flex items-center gap-2">
           <Image 
             src="/earnup.png" 
