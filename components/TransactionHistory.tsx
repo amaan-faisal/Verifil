@@ -9,7 +9,7 @@ import Pagination from './Pagination'
 interface TransactionHistoryProps {
   address: string
 }
-//com
+//comikniik
 export default function TransactionHistory({ address }: TransactionHistoryProps) {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [isLoading, setIsLoading] = useState(false)

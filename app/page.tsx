@@ -216,11 +216,6 @@ export default function LandingPage() {
                 Start Analyzing
                 <ArrowRight className="w-5 h-5" />
               </Link>
-              <button
-                className="px-8 py-4 border-2 border-white text-white rounded-xl hover:bg-white/10 transition-all duration-300 font-semibold text-lg backdrop-blur-sm w-fit"
-              >
-                Watch Demo
-              </button>
             </div>
           </div>
 
